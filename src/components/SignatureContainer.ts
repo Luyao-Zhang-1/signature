@@ -1,6 +1,6 @@
 import { Component, createElement } from "react";
 
-import { Signature, SignatureProps } from "./Signature";
+import { Signature, SignatureProps, heightUnitType, widthUnitType } from "./Signature";
 
 interface WrapperProps {
     mxObject?: mendix.lib.MxObject;
@@ -9,8 +9,8 @@ interface WrapperProps {
 export interface SignatureContainerProps extends WrapperProps {
     dataUrl?: string;
     height?: number;
-    heightUnit: "percentageOfWidth" | "pixels" | "percentageOfParent";
-    widthUnit: "percentage" | "pixels";
+    heightUnit: heightUnitType;
+    widthUnit: widthUnitType;
     width?: number;
     gridx?: number;
     gridy?: number;

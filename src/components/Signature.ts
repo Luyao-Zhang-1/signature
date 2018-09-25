@@ -6,8 +6,8 @@ import "../ui/Signature.scss";
 
 export interface SignatureProps {
     alertMessage?: string;
-    widthUnit?: string; // TODO: Fix types
-    heightUnit?: string; // TODO: Fix types
+    widthUnit?: widthUnitType;
+    heightUnit?: heightUnitType;
     height?: number;
     width?: number;
     gridx?: number;
@@ -25,7 +25,11 @@ export interface SignatureProps {
 
 export interface SignatureState {
     isSet: boolean;
+    isGridDrawn: boolean;
 }
+
+export type heightUnitType = "percentageOfWidth" | "pixels" | "percentageOfParent";
+export type widthUnitType = "percentage" | "pixels";
 
 export class Signature extends Component<SignatureProps, SignatureState> {
     private canvasNode: HTMLCanvasElement;
@@ -36,7 +40,10 @@ export class Signature extends Component<SignatureProps, SignatureState> {
     constructor(props: SignatureProps) {
         super(props);
 
-        this.state = { isSet: false };
+        this.state = {
+            isSet: false,
+            isGridDrawn: false
+        };
     }
 
     render() {
@@ -75,11 +82,18 @@ export class Signature extends Component<SignatureProps, SignatureState> {
                 maxWidth: this.props.maxLineWidth,
                 minWidth: this.props.minLineWidth
             });
+
             if (this.canvasNode.parentElement) {
                 this.height = this.canvasNode.parentElement.clientHeight;
                 this.width = this.canvasNode.parentElement.clientWidth;
             }
-            if (this.props.showGrid) { this.drawGrid(); }
+        }
+    }
+
+    componentDidUpdate() {
+        if (this.props.showGrid && !this.state.isGridDrawn) {
+            this.drawGrid();
+            this.setState({ isGridDrawn: true });
         }
     }
 
@@ -93,31 +107,33 @@ export class Signature extends Component<SignatureProps, SignatureState> {
 
     private resetCanvas = () => {
         this.signaturePad.clear();
-        this.setState({ isSet: false });
-        if (this.props.showGrid) { this.drawGrid(); }
+        this.setState({ isSet: false , isGridDrawn: false });
     }
 
     private drawGrid = () => {
         const { showGrid, gridColor, gridx, gridy } = this.props;
         if (!showGrid) return;
 
-        let x = gridx;
-        let y = gridy;
-        const context = this.canvasNode.getContext("2d") as CanvasRenderingContext2D;
-        context.beginPath();
+        if (this.width && this.height) {
+            let x = gridx;
+            let y = gridy;
+            const context = this.canvasNode.getContext("2d") as CanvasRenderingContext2D;
+            context.beginPath();
 
-        for (; x < this.width; x += gridx) {
-            context.moveTo(x, 0);
-            context.lineTo(x, this.height);
+            for (; x < this.width; x += gridx) {
+                context.moveTo(x, 0);
+                context.lineTo(x, this.height);
+            }
+
+            for (; y < this.height; y += gridy) {
+                context.moveTo(0, y);
+                context.lineTo(this.width, y);
+            }
+
+            context.lineWidth = 1;
+            context.strokeStyle = gridColor;
+            context.stroke();
         }
-
-        for (; y < this.height; y += gridy) {
-            context.moveTo(0, y);
-            context.lineTo(this.width, y);
-        }
-
-        context.lineWidth = 1;
-        context.strokeStyle = gridColor;
     }
 
     private getStyle(props: SignatureProps): object {
