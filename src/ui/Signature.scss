@@ -1,12 +1,19 @@
-.widget-Signature {
-    canvas {
-        position: relative;
-        left: 0px;
-        right: 0px;
-        max-width: none;
-        display: block;
-        margin: 0 auto;
-        width: 100%;
+.widget-signature-wrapper {
+    position: relative;
+
+    // .widget-signature {
+    // top: 0; bottom: 0; left: 0; right: 0;
+    // position: absolute;
+
+        > canvas {
+            left: 0px;
+            right: 0px;
+            max-width: none;
+            display: block;
+            margin: 0 auto;
+            float: left;
+            clear: left;
+        }
     }
 
     button.btn {
@@ -17,9 +24,3 @@
     button.btn.btn-primary {
         float: right;
     }
-
-    &.signature-unset {
-        float: left;
-        clear: left;
-    }
-}

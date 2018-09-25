@@ -9,6 +9,8 @@ interface WrapperProps {
 export interface SignatureContainerProps extends WrapperProps {
     dataUrl?: string;
     height?: number;
+    heightUnit: "percentageOfWidth" | "pixels" | "percentageOfParent";
+    widthUnit: "percentage" | "pixels";
     width?: number;
     gridx?: number;
     gridy?: number;
@@ -20,6 +22,7 @@ export interface SignatureContainerProps extends WrapperProps {
     velocityFilterWeight?: string;
     showGrid?: boolean;
     onChangeMicroflow?: string;
+    style?: object;
 }
 
 interface SignatureContainerState {
